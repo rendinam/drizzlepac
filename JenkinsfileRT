@@ -2,11 +2,6 @@
 if (utils.scm_checkout()) return
 
 
-def test_env = [
-    'TEST_BIGDATA=https://bytesalad.stsci.edu/artifactory'
-]
-
-
 // Configure artifactory ingest
 data_config = new DataConfig()
 data_config.server_id = 'bytesalad'
@@ -16,44 +11,9 @@ data_config.match_prefix = '(.*)_result' // .json is appended automatically
 
 bc = new BuildConfig()
 bc.nodetype = 'linux'
-bc.env_vars = test_env
+bc.env_vars = ['TEST_BIGDATA=https://bytesalad.stsci.edu/artifactory']
 bc.name = '3.6'
 bc.conda_channels = ['http://ssb.stsci.edu/astroconda']
-bc.conda_packages = ['numpy',
-                     'fitsblender',
-                     'graphviz',
-                     'nictools',
-                     'numpydoc',
-                     'pyregion',
-                     'pytest=3.8.2',
-                     'pytest-remotedata',
-                     'crds',
-                     'scipy',
-                     'spherical-geometry',
-                     'sphinx',
-                     'sphinx_rtd_theme',
-                     'stsci_rtd_theme',
-                     'stsci.convolve',
-                     'stsci.image',
-                     'stsci.imagemanip',
-                     'stsci.imagestats',
-                     'stsci.ndimage',
-                     'stsci.skypac',
-                     'stregion',
-                     'stsci.stimage',
-                     'setuptools',
-                     'python=3.6']
-bc.build_cmds = ["./miniconda/bin/conda install -q astropy stwcs -c http://ssb.stsci.edu/astroconda-dev",
-                 "python setup.py install"]
-bc.test_cmds = ["pytest --basetemp=tests_output --junitxml results.xml --bigdata --remote-data=any"]
-bc.test_configs = [data_config]
-
-
-bc1 = utils.copy(bc)
-bc1.nodetype = 'linux'
-bc1.env_vars = test_env
-bc1.name = '3.6'
-bc1.conda_channels = ['http://ssb.stsci.edu/conda-dev']
 bc1.conda_packages = ['numpy',
                      'fitsblender',
                      'graphviz',
@@ -82,6 +42,14 @@ bc1.conda_packages = ['numpy',
                      'setuptools',
                      'pip',
                      'python=3.6']
+bc.build_cmds = ["which pip", "python setup.py install"]
+bc.test_cmds = ["pytest --basetemp=tests_output --junitxml results.xml --bigdata --remote-data=any"]
+bc.test_configs = [data_config]
+
+
+bc1 = utils.copy(bc)
+bc1.name = '3.6-dev'
+bc1.conda_channels = ['http://ssb.stsci.edu/conda-dev']
 bc1.build_cmds = ["pip install --no-deps"]
 bc1.test_cmds = ["pytest --basetemp=tests_output --junitxml results.xml --bigdata --remote-data=any"]
 bc1.test_configs = [data_config]
