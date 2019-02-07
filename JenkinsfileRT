@@ -80,6 +80,7 @@ bc1.conda_packages = ['numpy',
                      'astropy',
                      'stsci.stimage',
                      'setuptools',
+                     'pip',
                      'python=3.6']
 bc1.build_cmds = ["pip install --no-deps"]
 bc1.test_cmds = ["pytest --basetemp=tests_output --junitxml results.xml --bigdata --remote-data=any"]
